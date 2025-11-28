@@ -1,12 +1,21 @@
-chrome.webNavigation.onBeforeNavigate.addListener(details => {
-    const url = new URL(details.url);
-    const hostname = url.hostname;
+chrome.webNavigation.onBeforeNavigate.addListener((details) => {
+    try {
+        const url = new URL(details.url);
 
-    if (hostname.includes("youtube.com")) {
-        chrome.tabs.update(details.tabId, {
-            url: chrome.runtime.getURL("block.html")
-        });
+        // Only block real YouTube domains
+        if (url.hostname.includes("youtube.com")) {
+            chrome.tabs.update(details.tabId, {
+                url: chrome.runtime.getURL("block.html")
+            });
+        }
+
+    } catch (err) {
+        // Ignore invalid URLs like chrome://, chrome-search://, etc.
+        return;
     }
-}, {
-    url: [{ hostContains: "youtube.com" }]
+},
+{
+    url: [
+        { urlMatches: "^https?://(www\\.)?youtube\\.com/.*" }
+    ]
 });
