@@ -11,9 +11,6 @@
     "*://*.youtube.com/*"
   ],
   "action": {
-    "default_icon": "icons/icon128.png"
-  },
-  "icons": {
-    "128": "icons/icon128.png"
+    "default_icon": "IMG_1995.png"
   }
 }
