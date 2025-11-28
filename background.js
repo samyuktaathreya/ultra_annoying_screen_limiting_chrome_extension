@@ -1,4 +1,5 @@
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
+    if (details.frameId !== 0) return;
     const url = details.url || "";
 
     // Only block exact YouTube URL prefix
