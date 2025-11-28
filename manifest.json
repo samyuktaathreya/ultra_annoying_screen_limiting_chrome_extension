@@ -3,7 +3,14 @@
   "name": "YouTube Blocker",
   "version": "1.0",
   "description": "Blocks access to YouTube.",
-  "permissions": ["tabs", "storage", "webNavigation"],
+  "host_permissions": [
+      "<all_urls>"
+  ],
+  "permissions": [
+      "tabs",
+      "storage",
+      "webNavigation"
+  ],
   "background": {
     "service_worker": "background.js"
   },
