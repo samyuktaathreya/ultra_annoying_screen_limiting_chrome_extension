@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings – YouTube Blocker</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 400px;
+            margin: 40px auto;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 20px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Blocker Settings</h1>
+
+    <label>Daily Time Limit (minutes):</label>
+    <input type="number" id="dailyLimit">
+
+    <label>Block Enabled:</label>
+    <select id="blockEnabled">
+        <option value="true">Enabled</option>
+        <option value="false">Disabled</option>
+    </select>
+
+    <button id="saveBtn">Save Settings</button>
+
+    <p id="status"></p>
+
+    <script src="options.js"></script>
+</body>
+</html>
