@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Blocker",
+  "version": "1.0",
+  "description": "Blocks access to YouTube.",
+  "host_permissions": [
+      "<all_urls>"
+  ],
+  "permissions": [
+      "tabs",
+      "storage",
+      "webNavigation"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_icon": "IMG_1995.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
+
+}
