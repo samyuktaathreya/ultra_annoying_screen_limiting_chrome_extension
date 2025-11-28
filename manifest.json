@@ -7,9 +7,6 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": [
-    "*://*.youtube.com/*"
-  ],
   "action": {
     "default_icon": "IMG_1995.png"
   },
