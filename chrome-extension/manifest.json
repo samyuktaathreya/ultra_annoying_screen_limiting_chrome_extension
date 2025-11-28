@@ -9,7 +9,9 @@
   "permissions": [
       "tabs",
       "storage",
-      "webNavigation"
+      "webNavigation",
+      "webRequest",
+      "webRequestBlocking"
   ],
   "background": {
     "service_worker": "background.js"

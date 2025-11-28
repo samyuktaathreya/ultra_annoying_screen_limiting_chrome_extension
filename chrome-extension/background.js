@@ -53,36 +53,36 @@ async function isHostBlocked(hostname, allGroups) {
     return false; // Host is not blocked
 }
 
+chrome.webRequest.onBeforeRequest.addListener(
+    async (details) => {
+        // Ignore internal pages, frames, or non-http
+        if (details.frameId !== 0 || !details.url.startsWith("http")) {
+            return { cancel: false };
+        }
 
-// --- Main Event Listener ---
-
-chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
-    // Ignore internal chrome pages, non-HTTP/HTTPS, or frames
-    if (details.frameId !== 0 || !details.url.startsWith("http")) {
-        return;
-    }
-
-    // A. Parse the hostname
-    let url;
-    try {
-        url = new URL(details.url);
-    } catch (e) {
-        return; // Invalid URL, ignore
-    }
-
-    const hostname = url.hostname;
-    
-    // B. Get the saved groups from storage
-    const storage = await chrome.storage.sync.get("groups");
-    const groups = storage.groups || [];
-
-    // C. Check if the hostname is blocked right now
-    if (await isHostBlocked(hostname, groups)) {
-        // D. Redirect the user to the block page
+        let url;
+        try {
+            url = new URL(details.url);
+        } catch (e) {
+            return { cancel: false };
+        }
         
-        // Use chrome.tabs.update to change the current tab's URL
-        chrome.tabs.update(details.tabId, { url: BLOCK_PAGE_URL });
-        // NOTE: webNavigation does not support returning a blocking response, 
-        // so we must use tabs.update to redirect.
-    }
-});
+        const hostname = url.hostname;
+        
+        // C. Get the saved groups from storage
+        const storage = await chrome.storage.sync.get("groups");
+        const groups = storage.groups || [];
+
+        // D. Check if the hostname is blocked right now
+        if (await isHostBlocked(hostname, groups)) {
+            // E. Redirect immediately using the blocking option
+            return { redirectUrl: BLOCK_PAGE_URL };
+        }
+        
+        return { cancel: false };
+    },
+    // Filters: Apply to all URLs and main frame
+    { urls: ["<all_urls>"], types: ["main_frame"] }, 
+    // Blocking type options
+    ["blocking"]
+);
