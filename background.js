@@ -1,15 +1,36 @@
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
     if (details.frameId !== 0) return;
 
-    const url = details.url || "";
-    const hostname = new URL(url).hostname;
+    chrome.storage.sync.get(["blockedSites"], ({ blockedSites }) => {
+        if (!blockedSites) return;
 
-    // Get blocklist from storage
-    chrome.storage.sync.get(["blockedSites"], data => {
-        const blocked = data.blockedSites || [];
+        const url = details.url || "";
+        const hostname = new URL(url).hostname;
 
-        for (const site of blocked) {
-            if (hostname.includes(site)) {
+        // Get weekday
+        const days = ["sun","mon","tue","wed","thu","fri","sat"];
+        const today = days[new Date().getDay()];
+
+        const now = new Date();
+        const currentTime = now.toTimeString().slice(0,5); // "HH:MM"
+
+        for (const siteObj of blockedSites) {
+            if (!hostname.includes(siteObj.hostname)) continue;
+
+            const config = siteObj.schedule[today];
+
+            if (!config.enabled) continue;
+
+            // FULL DAY block (Option A)
+            if (config.start === "00:00" && config.end === "23:59") {
+                chrome.tabs.update(details.tabId, {
+                    url: chrome.runtime.getURL("block.html")
+                });
+                return;
+            }
+
+            // TIME WINDOW block
+            if (currentTime >= config.start && currentTime <= config.end) {
                 chrome.tabs.update(details.tabId, {
                     url: chrome.runtime.getURL("block.html")
                 });
@@ -18,6 +39,4 @@ chrome.webNavigation.onBeforeNavigate.addListener((details) => {
         }
     });
 
-}, {
-    url: [{ urlMatches: "https?://.*" }]
-});
+}, { url: [{ urlMatches: ".*" }] });
